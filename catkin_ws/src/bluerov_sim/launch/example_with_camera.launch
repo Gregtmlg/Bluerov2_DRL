@@ -1,0 +1,57 @@
+<launch>
+    <arg name="vehicle_name" default="bluerov" />
+    <!-- Vehicle spawn position so that tags are seen -->
+    <arg name="camera" default="true"/>
+    <arg name="x" default="0.7" />
+    <arg name="y" default="2.0" />
+    <arg name="z" default="-0.7" />
+    <arg name="P" default="0.0" />
+    <arg name="R" default="0.0" />
+    <arg name="Y" default="1.57" />
+
+
+    <!-- camera/image processing specific-->
+    <arg name="camera_name" default="front_camera" doc="Typically 'vertical_camera' or 'front_camera'. Used as namespace for the AprilTag pipeline." />
+    <arg name="image_raw_topic" default="image_raw" />
+
+    <!-- known tags for AprilTag algorithm-->
+    <arg name="tag_file" value="$(find bluerov_sim)/config/tags_standalone.yaml" />
+
+    <include file="$(find bluerov_sim)/launch/gazebo_base.launch" />
+
+    <!-- spawn tank and AprilTags -->
+    <include file="$(find bluerov_sim)/launch/spawn_tank.launch"/>
+    
+    <group ns="$(arg vehicle_name)">
+        <!-- spawn BlueROV model -->
+        <include file="$(find bluerov_sim)/launch/spawn_vehicle.launch">
+            <arg name="camera" value="$(arg camera)" />
+            <arg name="x" value="$(arg x)" />
+            <arg name="y" value="$(arg y)" />
+            <arg name="z" value="$(arg z)" />
+            <arg name="R" default="$(arg R)" />
+            <arg name="P" default="$(arg P)" />
+            <arg name="Y" default="$(arg Y)" />
+        </include>
+
+        <!--Our Range Sensor that publishes distances to anchors -->
+        <include file="$(find bluerov_sim)/launch/range_sensor.launch"/>
+    
+        <group ns="$(arg camera_name)">
+            <!-- start AprilTag Algorithm -->
+            <node pkg="apriltag_ros"
+                    type="apriltag_ros_continuous_node"
+                    name="apriltag_node"
+                    clear_params="true"
+                    output="screen">
+                <rosparam command="load" file="$(find apriltag_ros)/config/settings.yaml"/>
+                <rosparam command="load" file="$(arg tag_file)"/>
+                <remap from="image_rect" to="$(arg image_raw_topic)" />
+                <param name="camera_frame" value="$(arg vehicle_name)/$(arg camera_name)/camera_frame"/>
+                <param name="publish_tag_detections_image" value="true"/>
+            </node>
+        </group>
+    
+    </group>
+
+</launch>

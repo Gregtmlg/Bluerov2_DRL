@@ -1,0 +1,29 @@
+<launch>
+
+  <arg name="vehicle_name" default="bluerov" />
+  <arg name="robot_name" default="bluerov" />
+  <arg name="robot_position" default="-x 0 -y 0 -z -2.7" />
+
+
+
+    <!-- Load the SDF and spawn the bluerov-->
+    <group ns="$(arg vehicle_name)">
+
+        <include file="$(find bluerov_sim)/launch/spawn_vehicle.launch">
+            <arg name="x" value="0" />
+            <arg name="y" value="0" />
+            <arg name="z" value="-2.7" />
+        </include>
+    </group>
+
+    <!--
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+      <param name="publish_frequency" type="double" value="30.0"/>
+    </node>
+
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+      <param name="publish_frequency" type="double" value="30.0"/>
+  </node>
+  -->
+
+</launch>

@@ -1,0 +1,4 @@
+<launch>
+    <!-- launch the motor_command_sender node-->
+    <node name="velodyne_reader" pkg="awesome_package" type="velodyne_reader.py" output="screen"/>
+</launch>

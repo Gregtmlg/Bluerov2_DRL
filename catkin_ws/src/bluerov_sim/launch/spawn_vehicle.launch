@@ -1,0 +1,44 @@
+<launch>
+    <!-- Posix SITL environment launch script -->
+    <!-- launchs PX4 SITL and spawns vehicle -->
+    <arg name="camera" default="false" />
+    <!-- vehicle pose -->
+    <arg name="x" default="0" />
+    <arg name="y" default="0" />
+    <arg name="z" default="-0.2" />
+    <arg name="R" default="0" />
+    <arg name="P" default="0" />
+    <arg name="Y" default="0" />
+    <!-- vehcile model and config -->
+    <arg name="est" value="ekf2" />
+    <arg unless="$(arg camera)" name="vehicle" value="uuv_bluerov2_heavy" />
+    <arg if="$(arg camera)" name="vehicle" value="uuv_bluerov2_heavy_cam" />
+    <arg name="px4_vehicle" value="uuv_bluerov2_heavy" />
+    <arg name="ID" value="0" />
+    <env name="PX4_SIM_MODEL" value="$(arg px4_vehicle)" />
+    <env name="PX4_ESTIMATOR" value="$(arg est)" />
+    <arg name="mavlink_udp_port" value="14560" />
+    <arg name="mavlink_tcp_port" value="4560" />
+    <arg name="fcu_url" value="udp://:14540@localhost:14580" />
+    <!-- PX4 configs -->
+    <!-- generate sdf vehicle model -->
+    <arg name="cmd" value="xmlstarlet ed -d '//plugin[@name=&quot;mavlink_interface&quot;]/mavlink_tcp_port' -s '//plugin[@name=&quot;mavlink_interface&quot;]' -t elem -n mavlink_tcp_port -v $(arg mavlink_tcp_port) $(find bluerov_sim)/models/$(arg vehicle)/$(arg vehicle).sdf" />
+    <param command="$(arg cmd)" name="model_description" />
+    <!-- PX4 SITL -->
+    <arg name="px4_command_arg1" value="" />
+    <node name="sitl_$(arg ID)" pkg="px4" type="px4" args="$(find px4)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS $(arg px4_command_arg1) -i $(arg ID) -w sitl_$(arg vehicle)_$(arg ID)" />
+    <!-- spawn vehicle -->
+    <node name="$(arg vehicle)_$(arg ID)_spawn" output="screen" pkg="gazebo_ros" type="spawn_model" args="-sdf -param model_description -model $(arg vehicle)_$(arg ID) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)" />
+
+    <!-- MAVROS -->
+    <include file="$(find mavros)/launch/px4.launch">
+        <arg name="fcu_url" value="$(arg fcu_url)" />
+        <arg name="gcs_url" value="" />
+        <arg name="tgt_system" value="$(eval 1 + arg('ID'))" />
+        <arg name="tgt_component" value="1" />
+        <arg name="log_output" value="log" />
+    </include>
+
+    <!-- The vehicle needs to be armed to actuate its thrusters. -->
+    <node pkg="bluerov_sim" type="auto_arm_node.py" name="auto_arm" />
+</launch>

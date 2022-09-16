@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="3">
+    <name>bluerov_sim</name>
+    <version>0.0.0</version>
+    <description>The simulation package</description>
+
+    <maintainer email="thies.lennart.alff@tuhh.de">Thies Lennart Alff</maintainer>
+
+    <license>TODO</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>message_generation</depend>
+    <depend>message_runtime</depend>
+    <depend>gazebo_ros</depend>
+    <depend>gazebo_plugins</depend>
+    <depend>roscpp</depend>
+    <depend>std_msgs</depend>
+    <depend>apriltag_ros</depend>
+    <depend>geometry_msgs</depend>
+
+    <depend condition="$ROS_PYTHON_VERSION == 2">python-pygame</depend>
+    <depend condition="$ROS_PYTHON_VERSION == 3">python3-pygame</depend>
+ 
+    <!-- <exec_depend>gazebo_ros</exec_depend> -->
+
+    <!-- The export tag contains other, unspecified, tags -->
+    <export>
+        <gazebo plugin_path="${prefix}/lib" />
+        <gazebo_ros gazebo_model_path="${prefix}/models" />
+    </export>
+</package>

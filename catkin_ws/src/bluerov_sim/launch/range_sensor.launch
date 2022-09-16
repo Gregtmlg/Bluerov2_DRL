@@ -1,0 +1,11 @@
+<launch>
+    <arg name="sim" default="True" />
+    <arg name="camera_name" default="front_camera" />
+
+    <!-- **Magic** Range Sensor -->
+    <node pkg="bluerov_sim" type="range_sensor_node.py" name="range_sensor" output="screen">
+        <param name="sim" type="bool" value="$(arg sim)" />
+        <remap unless="$(arg sim)" from="tag_detections" to="$(arg camera_name)/tag_detections" />
+    </node>
+
+</launch>

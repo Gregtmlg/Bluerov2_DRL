@@ -1,0 +1,25 @@
+<launch>
+    <arg name="vehicle_name" default="bluerov" />
+
+    <!-- <include file="$(find bluerov_sim)/launch/gazebo_base.launch" />  -->
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(find bluerov_sim)/worlds/bluerov_stage_2.world"/>
+      <arg name="paused" value="false"/>
+      <arg name="use_sim_time" value="0.1"/>
+      <arg name="gui" value="true"/>
+      <arg name="headless" value="false"/>
+      <arg name="debug" value="false"/>
+    </include>
+
+    <group ns="$(arg vehicle_name)">
+
+        <include file="$(find bluerov_sim)/launch/spawn_vehicle.launch">
+            <arg name="z" value="-5" />
+        </include>
+
+        <node name="keyboard" pkg="bluerov_sim" type="keyboard_control.py" output="screen" />
+        <node name="mixer" pkg="bluerov_sim" type="mixer.py" />
+    </group>
+
+</launch>

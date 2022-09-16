@@ -1,0 +1,31 @@
+<launch>
+    <arg name="vehicle_name" default="bluerov" />
+    <!-- Vehicle spawn position so that tags are seen -->
+    <arg name="x" default="0.7" />
+    <arg name="y" default="2.0" />
+    <arg name="z" default="-0.7" />
+    <arg name="P" default="0.0" />
+    <arg name="R" default="0.0" />
+    <arg name="Y" default="1.57" />
+
+    <include file="$(find bluerov_sim)/launch/gazebo_base.launch" />
+
+    <!-- spawn tank and AprilTags -->
+    <include file="$(find bluerov_sim)/launch/spawn_tank.launch"/>
+    
+    <group ns="$(arg vehicle_name)">
+        <!-- spawn BlueROV model -->
+        <include file="$(find bluerov_sim)/launch/spawn_vehicle.launch">
+            <arg name="x" value="$(arg x)" />
+            <arg name="y" value="$(arg y)" />
+            <arg name="z" value="$(arg z)" />
+            <arg name="R" default="$(arg R)" />
+            <arg name="P" default="$(arg P)" />
+            <arg name="Y" default="$(arg Y)" />
+        </include>
+
+        <!--Our Range Sensor that publishes distances to anchors -->
+        <include file="$(find bluerov_sim)/launch/range_sensor.launch"/>
+    </group>
+
+</launch>
