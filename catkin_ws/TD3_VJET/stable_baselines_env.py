@@ -24,6 +24,9 @@ import time
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+COLLISION_DIST = 0.035
+GOAL_REACHED_DIST = 0.03
+
 
 
 # Function to put the laser data in bins
@@ -54,10 +57,20 @@ class UnityEnv(gym.Env):
 
         self._max_episode_length = max_episode_length
 
+        # Dimension observations velodyne
+        self.environment_dim = 20
+
+        self.gaps = [[-np.pi / 2 - 0.03, -np.pi / 2 + np.pi / self.environment_dim]]
+        for m in range(self.environment_dim - 1):
+            self.gaps.append(
+                [self.gaps[m][1], self.gaps[m][1] + np.pi / self.environment_dim]
+            )
+        self.gaps[-1][-1] += 0.03
+
         # Define action and observation space
         gym.Env.__init__(self)
         self.action_space = spaces.Box(low=-1, high=1.0, shape=(2,), dtype=np.float32)
-        self.observation_space = spaces.Box(low=float("inf"), high=float("inf"), shape=(16,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=float("inf"), high=float("inf"), shape=(16 + self.environment_dim,), dtype=np.float32)
 
         # Construction variables thrusters
         self.thrust = 0.0
@@ -127,11 +140,26 @@ class UnityEnv(gym.Env):
         self.odom = rospy.Subscriber('/bluerov/mavros/local_position/odom', Odometry, self.odom_callback, queue_size=1)  
         self.bluerov_pose = rospy.Subscriber('/bluerov/mavros/local_position/pose', PoseStamped, self.bluerov_pose_callback, queue_size=1)
         self.bluerov_velocity = rospy.Subscriber('/bluerov/mavros/local_position/velocity_local', TwistStamped, self.bluerov_vel_callback, queue_size=1)
+        self.velodyne = rospy.Subscriber("/velodyne_points", PointCloud2, self.velodyne_callback, queue_size=1)
 
 
         self.change_goal()
 
+    def velodyne_callback(self, v):
+        data = list(pc2.read_points(v, skip_nans=False, field_names=("x", "y", "z")))
+        self.velodyne_data = np.ones(self.environment_dim) * 10
+        for i in range(len(data)):
+            if data[i][2] > -0.2:
+                dot = data[i][0] * 1 + data[i][1] * 0
+                mag1 = math.sqrt(math.pow(data[i][0], 2) + math.pow(data[i][1], 2))
+                mag2 = math.sqrt(math.pow(1, 2) + math.pow(0, 2))
+                beta = math.acos(dot / (mag1 * mag2)) * np.sign(data[i][1])
+                dist = math.sqrt(data[i][0] ** 2 + data[i][1] ** 2 + data[i][2] ** 2)
 
+                for j in range(len(self.gaps)):
+                    if self.gaps[j][0] <= beta < self.gaps[j][1]:
+                        self.velodyne_data[j] = min(self.velodyne_data[j], dist)
+                        break
 
     def bluerov_pose_callback(self, pose_data):
         self.last_pose = pose_data
@@ -185,7 +213,8 @@ class UnityEnv(gym.Env):
                                bluerov_world_orientation,
                                bluerov_linear_velocity,
                                bluerov_angular_velocity,
-                               goal_world_position,])
+                               goal_world_position,
+                               self.velodyne_data])
 
     
 
@@ -211,7 +240,7 @@ class UnityEnv(gym.Env):
         self.publish_message()
         rate.sleep()
 
-        target = False
+        done = False
 
         dataOdom = None
         while dataOdom is None:
@@ -228,11 +257,11 @@ class UnityEnv(gym.Env):
 
         observations = self.get_observation()
         info = {}
-        target = False
+        done = False
 
         #on teste si on a dépassé le nombre de step max d'un épisode
         if self.step_counter >= self._max_episode_length:
-            target = True
+            done = True
 
         current_bluerov_position = None
         while current_bluerov_position is None:
@@ -248,12 +277,21 @@ class UnityEnv(gym.Env):
         previous_dist_to_goal = np.linalg.norm(goal_world_position- previous_bluerov_position_array)
         current_dist_to_goal = np.linalg.norm(goal_world_position- current_bluerov_position_array)
 
-        reward = previous_dist_to_goal - current_dist_to_goal
-        if current_dist_to_goal < 0.3:
-            target = True
 
+        reward = previous_dist_to_goal - current_dist_to_goal
+
+        collision, min_laser = self.observe_collision(self.velodyne_data)
+
+        if collision:
+            reward -= 100
+            done = True
+
+        if current_dist_to_goal < GOAL_REACHED_DIST:
+            done = True
+
+        rospy.loginfo(reward)
         rospy.loginfo(self.step_counter)
-        return observations, reward, target, info
+        return observations, reward, done, info
 
 
 
@@ -309,6 +347,15 @@ class UnityEnv(gym.Env):
         self.goal_state.pose.orientation.z = 0.0
         self.goal_state.pose.orientation.w = 1.0
         self.goal_pose_publish.publish(self.goal_state)
+
+    
+    @staticmethod
+    def observe_collision(laser_data):
+        # Detect a collision from laser data
+        min_laser = min(laser_data)
+        if min_laser < COLLISION_DIST:
+            return True, min_laser
+        return False, min_laser
 
 
 

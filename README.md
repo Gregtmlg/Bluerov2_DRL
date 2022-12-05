@@ -1,7 +1,7 @@
 # Application DRL au Bluerov_2 ROS/Unity
 
 L'objectif est de pouvoir intégré un algorithme de Deep Reinforcement Learning au BlueRov2.
-Le Bluerov2 est ici contrôlé via ROS Noetic. Unity est pour le moment utilisé seulement pour la visualisation. Le DRL est construit à partir des librairies gym et stable-baselines3.
+Le Bluerov2 est ici contrôlé via ROS Noetic, qui permet d'utiliser le package Mavros qui fait le lien avec PX4. Unity est pour le moment utilisé seulement pour la visualisation. Le DRL est construit à partir des librairies gym et stable-baselines3.
 
 Ce projet est en cours de construction, le code n'est pas propre.
 
@@ -9,95 +9,61 @@ Ce projet est en cours de construction, le code n'est pas propre.
 
 - Ubuntu 20.04.5 LTS
 - Python 3.8
-- Unity 2021.3.7f1
+- Unity 2021.3.13f1
+
+## Structure
+
+Le projet est divisé en 2 parties distinctes : une partie concernant ROS et le DRL, et une seconde concernant la visualisation avec Unity.
+
+- ### ROS-DRL
+
+La partie Ros-DRL nous sert au lancement de la simulation, à la gestion des messages ainsi qu'au contrôle du BlueRov2. Dans cette partie on retrouve notamment les fichiers de launch ros, les noeuds python gérant le contrôle du BlueRov2 (keyboard ou DRL). C'est aussi dans cette partie que l'on installe le logiciel de contrôle PX4.
+
+ROS est un opérateur système robot qui nous permet de pouvoir développer notre application DRL de manière libre. Via MAVROS (et MAVLINK) notre application envoie les commandes que le drone doit exécuter et reçoit les données de "vol" via les topics ROS :
+
+<img title="topics ros" alt="Alt text" src="./Bluerov2_DRL/images/ros_topics.png">
+
+- ### Unity
+
+Unity est un moteur de jeux vidéos très répandu. Il est très puissant et intéressant pour nous puisqu'il offre la possibilité de communiquer avec ROS en ajoutant un simple package au projet. 
+Unity nous permet dans ce projet de créer/recréer l'environnement que l'on souhaite de manière la plus réaliste possible et d'y faire évoluer le Bluerov2 :
+
+<img title="topics ros" alt="Alt text" src="./Bluerov2_DRL/images/Partie_Unity.png">
+
 
 ## Installations
 
 ### Installation de ROS Noetic
 
-- Suivre les instructions de la doc officielle de ROS : http://wiki.ros.org/noetic/Installation/Ubuntu
+- Ajout de packages.ros.org à la liste des sources
 
-### Installer le package DRL
-1. Sourcer l'installation ROS :
+        sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+- Installation du package complet ROS Noetic
+
+        sudo apt update
+        sudo apt install ros-noetic-desktop-full
+
+- Automatisation des sources 
 
         source /opt/ros/noetic/setup.bash
 
-
-2. Cloner le répertoire :
-
-        git clone https://github.com/Gregtmlg/Bluerov2_DRL.git
-
-3. Initialiser le workspace :
-
-        catkin init
-
-4. Construire le workspace :
-
-        catkin build
-
-Si la commande échoue (peut arriver avec mavros) faire :
-
-              catkin clean
-
-Puis recommencer le build.
-
-
-
-5. Permettre de sourcer automatiquement le workspace :
-
-        echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
-        echo 'source $HOME/Bluerov2_DRL/catkin_ws/devel/setup.bash' >> ~/.bashrc
-
-6. Sourcer le workspace :
+        echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
         source ~/.bashrc
 
-### Installer PX4 :
+- Dépendences python3/ROS
 
-- Suivre les instruction sur cette page jusqu'à "Configure Environment Variables" compris : https://hippocampusrobotics.github.io/fav_docs/installation/install_firmware.html
+        sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
 
-- **Attention:** les répertoires ne sont pas les même sur le site (fav = Bluerov2_DRL). Aussi ne pas réinstaller Mavros et Mavlink
+- Initialisation de rosdep
 
-- Au moment de "3. Build the code" dans la rubrique "Build The PX4 Firmware", si au bout de plusieurs lancements la commande ne compile plus, recommencer l'installation de PX4 et lancer la commande suivante à la place :
-                
-                DONT_RUN=1 make -j2 px4_sitl gazebo_uuv_bluerov2_heavy
+        sudo rosdep init
 
-### Cloner le projet Unity :
+        rosdep update
 
-                git clone https://github.com/Gregtmlg/Bluerov2_Unity.git
+- En cas de problème, suivre les instructions de la doc officielle de ROS : http://wiki.ros.org/noetic/Installation/Ubuntu
 
 
-### Ajouter ROS TCP Endpoint :
-
-                cd ~/Blurov2_DRL/catkin_ws/src
-                git clone https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
-
-
-                cd cd ~/Blurov2_DRL/catkin_ws
-                catkin build
-
-### Ajouter l'extension ROS TCP Connector à Unity
-
-- Suivre les instructions sur ce github : https://github.com/Unity-Technologies/ROS-TCP-Connector
-
-### Installer les librairies python 
-
-- le fichier requirements.txt liste toutes les librairies que j'avais sur ma machine au moment de faire fonctionner le Bluerov2.
-
-## Guide d'utilisation
-
-- Le programme se lance en éxecutant le script python stable_baselines_td3.py : 
-
-                python3 ~/Bluerov2_DRL/TD3_VJET/stable_baselines_td3.py
-
-- Dans un autre terminal, lancer le serveur tcp : 
-
-                roslaunch ros_tcp_endpoint endpoint.launch
-
-- Dans Unity lancer la simulation pour visualiser le Bluerov2.
-
-- En cas de bug, ou pour arrêter le programme : 
-
-                killall -9 rosout roslaunch rosmaster gzserver nodelet robot_state_publisher gzclient python python3
-
+### Installation du package DRL-ROS
 

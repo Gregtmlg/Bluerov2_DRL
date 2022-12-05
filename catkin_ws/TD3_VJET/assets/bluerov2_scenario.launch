@@ -31,6 +31,6 @@
 
 
   <!-- Mixer -->
-  <node name="mixer" pkg="bluerov_sim" type="mixer.py" />
+  <!-- <node name="mixer" pkg="bluerov_sim" type="mixer.py" /> -->
 
 </launch>

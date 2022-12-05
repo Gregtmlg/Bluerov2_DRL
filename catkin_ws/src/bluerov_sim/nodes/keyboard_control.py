@@ -230,19 +230,19 @@ class KeyboardControlNode():
 
     def init_controls(self):
         controls = {
-            pygame.K_LEFT:
-            dict(
-                pressed=False,
-                changed=False,
-                description="Turn left.",
-                pressed_callback=(lambda: self.set_yaw_rate(1)),
-                released_callback=(lambda: self.set_yaw_rate(0)),
-            ),
-            pygame.K_RIGHT:
+            pygame.K_d:
             dict(
                 pressed=False,
                 changed=False,
                 description="Turn right.",
+                pressed_callback=(lambda: self.set_yaw_rate(1)),
+                released_callback=(lambda: self.set_yaw_rate(0)),
+            ),
+            pygame.K_q:
+            dict(
+                pressed=False,
+                changed=False,
+                description="Turn left.",
                 pressed_callback=(lambda: self.set_yaw_rate(-1)),
                 released_callback=(lambda: self.set_yaw_rate(0)),
             ),
@@ -262,7 +262,7 @@ class KeyboardControlNode():
                 pressed_callback=(lambda: self.set_vertical_thrust(-1)),
                 released_callback=(lambda: self.set_vertical_thrust(0)),
             ),
-            pygame.K_q:
+            pygame.K_RIGHT:
             dict(
                 pressed=False,
                 changed=False,
@@ -270,7 +270,7 @@ class KeyboardControlNode():
                 pressed_callback=(lambda: self.set_lateral_thrust(1)),
                 released_callback=(lambda: self.set_lateral_thrust(0)),
             ),
-            pygame.K_d:
+            pygame.K_LEFT:
             dict(
                 pressed=False,
                 changed=False,
