@@ -1,7 +1,0 @@
-velodyne_simulator/velodyne_gazebo_plugins
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/velodyne_gazebo_plugins/cmake.lock /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/./cmake.lock
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/velodyne_gazebo_plugins/share/velodyne_gazebo_plugins/cmake/velodyne_gazebo_pluginsConfig-version.cmake /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/share/velodyne_gazebo_plugins/cmake/velodyne_gazebo_pluginsConfig-version.cmake
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/velodyne_gazebo_plugins/share/velodyne_gazebo_plugins/cmake/velodyne_gazebo_pluginsConfig.cmake /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/share/velodyne_gazebo_plugins/cmake/velodyne_gazebo_pluginsConfig.cmake
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/velodyne_gazebo_plugins/lib/libgazebo_ros_velodyne_gpu_laser.so /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/lib/libgazebo_ros_velodyne_gpu_laser.so
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/velodyne_gazebo_plugins/lib/libgazebo_ros_velodyne_laser.so /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/lib/libgazebo_ros_velodyne_laser.so
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/velodyne_gazebo_plugins/lib/pkgconfig/velodyne_gazebo_plugins.pc /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/lib/pkgconfig/velodyne_gazebo_plugins.pc

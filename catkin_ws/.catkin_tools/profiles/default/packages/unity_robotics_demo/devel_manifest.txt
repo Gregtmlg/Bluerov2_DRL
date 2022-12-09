@@ -1,8 +1,0 @@
-unity_robotics_demo
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/unity_robotics_demo/cmake.lock /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/./cmake.lock
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/unity_robotics_demo/share/unity_robotics_demo/cmake/unity_robotics_demoConfig-version.cmake /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/share/unity_robotics_demo/cmake/unity_robotics_demoConfig-version.cmake
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/unity_robotics_demo/share/unity_robotics_demo/cmake/unity_robotics_demoConfig.cmake /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/share/unity_robotics_demo/cmake/unity_robotics_demoConfig.cmake
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/unity_robotics_demo/lib/pkgconfig/unity_robotics_demo.pc /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/lib/pkgconfig/unity_robotics_demo.pc
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/unity_robotics_demo/lib/unity_robotics_demo/color_publisher.py /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/lib/unity_robotics_demo/color_publisher.py
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/unity_robotics_demo/lib/unity_robotics_demo/cmake.lock /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/lib/unity_robotics_demo/cmake.lock
-/home/gregtmlg/bluerov2_DRL/catkin_ws/devel/.private/unity_robotics_demo/lib/unity_robotics_demo/position_service.py /home/gregtmlg/bluerov2_DRL/catkin_ws/devel/lib/unity_robotics_demo/position_service.py

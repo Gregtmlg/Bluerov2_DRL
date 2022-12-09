@@ -2,7 +2,7 @@
 
   <arg name="vehicle_name" default="bluerov" />
   <arg name="robot_name" default="bluerov" />
-  <arg name="robot_position" default="-x 0 -y 0 -z -2.7" />
+  <arg name="robot_position" default="-x -0 -y 0 -z 0" />
 
 
 
@@ -12,7 +12,7 @@
         <include file="$(find bluerov_sim)/launch/spawn_vehicle.launch">
             <arg name="x" value="0" />
             <arg name="y" value="0" />
-            <arg name="z" value="-2.7" />
+            <arg name="z" value="0" />
         </include>
     </group>
 
