@@ -33,6 +33,19 @@ Unity nous permet dans ce projet de créer/recréer l'environnement que l'on sou
 
 ## Installations
 
+### Environnement de développement
+
+Pour travailler sur le projet, j'utilise Visual Studio Code. C'est un IDE simple qui permet de travailler sur plusieurs langages de programmation (ici on utilise essentiellement python), et offre de nombreuses extensions pour reproduire des environnements de travail. 
+Pour installer Visual studio code sur Ubuntu, 2 solutions :
+
+1. utiliser Ubuntu Software, rechercher "code" et lancer l'installation
+
+2. télécharger le .deb à cette adresse : https://code.visualstudio.com/download et rentrer la commande suivante dans un terminal 
+
+        sudo apt install ./<file>.deb
+
+Une fois l'IDE lancé, aller dans **Extensions** et installer les extensions **Python** et **Git**
+
 ### Installation de ROS Noetic
 
 - Ajout de packages.ros.org à la liste des sources
